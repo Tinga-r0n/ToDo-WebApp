@@ -1,0 +1,297 @@
+﻿@{
+   
+    ViewData["Title"] = "AdminPage";
+}
+
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.5/css/dataTables.bootstrap5.min.css">
+
+<script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+
+<script src="https://cdn.datatables.net/v/dt/dt-2.1.6/datatables.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+
+
+
+
+@* Button for adding a new user *@
+<div class="mb-3 container d-grid gap-2 d-md-flex justify-content-md-end">
+    <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        <i class="fa fa-add"></i> Add User
+    </button>
+</div>
+
+@* Modal for adding a new user *@
+<div class="modal fade" id="exampleModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Add New User</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    @Html.AntiForgeryToken()
+                    <div class="mb-3">
+                        <label for="recipient-name" class="col-form-label">Full Name:</label>
+                        <input type="text" class="form-control" id="full-name">
+                    </div>              
+                    <div class="mb-3">
+                        <label for="recipient-name" class="col-form-label">Mobile Number:</label>
+                        <input type="text" class="form-control" id="mobile-number">
+                    </div>
+                    <div class="mb-3">
+                        <label for="message-text" class="col-form-label">Email:</label>
+                        <input type="email" class="form-control" id="emailAdd">
+                    </div>
+                    <div class="mb-3" style="display: none;">
+                        <label for="defaultPassword">Default Password</label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="defaultPassword"  />
+                            <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                                👁️
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="recipient-name" class="col-form-label">Role:</label>
+                        <select class="form-select" id="roleType">
+                            <option value="admin">Admin</option>
+                            <option value="user">User</option>
+
+                       
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button id="addUsers" type="button" class="btn btn-danger">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container nani" style="max-height:650px; overflow-x:hidden;">
+
+    <table class="table table-striped">
+        <thead class="text-center">
+            <tr>
+                <th scope="col" style="text-align: center; font-size: 13px; font-weight: bold;">ID Number</th>
+                <th scope="col" style="text-align: center; font-size: 13px; font-weight: bold;">Full Name</th>
+                <th scope="col" style="text-align: center; font-size: 13px; font-weight: bold;">Mobile Number</th>
+                <th scope="col" style="text-align: center; font-size: 13px; font-weight: bold;">Email</th>
+                <th scope="col" style="text-align: center; font-size: 13px; font-weight: bold;">Password</th>
+                <th scope="col" style="text-align: center; font-size: 13px; font-weight: bold;">Role</th>
+                <th scope="col" style="text-align: center; font-size: 13px; font-weight: bold;">Action</th>
+            </tr>
+        </thead>
+        <tbody id="userDetails">
+        </tbody>
+    </table>
+
+</div>
+
+
+<div class="modal" id="ConfirmModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="text-center fs-3 fw-bold">Confirmation</span>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="d-flex flex-column justify-content-center align-content-center">
+                    <p id="confirm_msg" class="text-center"></p>
+                </div>
+            </div>
+            <div class="modal-footer d-flex justify-content-center align-content-center">
+                <button type="button" id="confirmYes" class="btn btn-primary">Yes</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+
+    const baseUrl = (window.location.origin.includes("localhost")) ? window.location.origin : window.location.origin + "/DoneDash";
+
+           document.getElementById("addUsers").addEventListener("click", async function () {
+        let fullName = document.getElementById("full-name").value;
+        let mobileNumber = document.getElementById("mobile-number").value;
+        let email = document.getElementById("emailAdd").value;
+            let password = document.getElementById("defaultPassword").value.trim();
+    if (!password) {
+        password = generateDefaultPassword(); // Generate if empty
+    }
+
+        let role = document.getElementById("roleType").value;
+
+        if (!fullName || !mobileNumber || !email || !role) {
+            alert("All fields are required!");
+            return;
+        }
+
+        let userData = {
+            fullName: fullName,
+            mobileNumber: mobileNumber,
+            email: email,
+            role: role
+        };
+
+        try {
+            let response = await fetch(`${baseUrl}/api/User/register`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(userData)
+            });
+
+            let result = await response.json();
+            if (response.ok) {
+                document.getElementById("defaultPassword").value = result.defaultPassword;
+                  alert("User registered successfully!");
+                  location.reload();
+
+            } else {
+                alert(result.message);
+            }
+        } catch (error) {
+            console.error("Error:", error);
+            alert("Something went wrong.");
+        }
+    });
+
+        function generateDefaultPassword() {
+        let characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        let randomPart = "";
+        for (let i = 0; i < 4; i++) {
+            randomPart += characters.charAt(Math.floor(Math.random() * characters.length));
+        }
+        return "donedash" + randomPart;
+    }
+
+
+          document.getElementById("togglePassword").addEventListener("click", function () {
+        let passwordField = document.getElementById("defaultPassword");
+        if (passwordField.type === "password") {
+            passwordField.type = "text";
+        } else {
+            passwordField.type = "password";
+        }
+    });
+
+
+        async function fetchUsers() {
+        try {
+            let response = await fetch(`${baseUrl}/api/User/get-users`);
+            let users = await response.json();
+
+            let userDetails = document.getElementById("userDetails");
+            userDetails.innerHTML = ""; // Clear previous data
+
+            if (response.ok) {
+                users.forEach(user => {
+                    let row = `
+                        <tr class="text-center">
+                            <td>${user.id}</td>
+                            <td>${user.name}</td>
+                            <td>${user.user_phone}</td>
+                            <td>${user.email}</td>
+                            <td>
+                                <input type="password" value="${user.password}" class="form-control password-field" readonly>
+                                <button class="btn btn-sm btn-outline-secondary togglePassword">👁️</button>
+                            </td>
+                            <td>${user.role}</td>
+                            <td>
+                                <button class="btn btn-sm btn-danger deleteUser" data-id="${user.id}">Delete</button>
+                            </td>
+                        </tr>
+                    `;
+                    userDetails.innerHTML += row;
+                });
+
+                // Add event listeners for Show Password buttons
+                document.querySelectorAll(".togglePassword").forEach(button => {
+                    button.addEventListener("click", function () {
+                        let passwordField = this.previousElementSibling;
+                        passwordField.type = passwordField.type === "password" ? "text" : "password";
+                    });
+                });
+
+            document.querySelectorAll(".deleteUser").forEach(button => {
+                button.addEventListener("click", function () {
+                    let userId = this.getAttribute("data-id");
+                    let userName = this.getAttribute("data-name");
+                    confirmDelete(userId, userName);
+                });
+            });
+
+            } else {
+                userDetails.innerHTML = `<tr><td colspan="7" class="text-center">${users.message}</td></tr>`;
+            }
+
+        } catch (error) {
+            console.error("Error fetching users:", error);
+        }
+    }
+
+    // Call fetchUsers on page load
+    document.addEventListener("DOMContentLoaded", fetchUsers);
+
+        function confirmDelete(userId, userName) {
+        // Set confirmation message
+        document.getElementById("confirm_msg").innerText = `Are you sure you want to delete ${userName}?`;
+
+        // Show modal
+        let confirmModal = new bootstrap.Modal(document.getElementById("ConfirmModal"));
+        confirmModal.show();
+
+        // Remove any previous event listeners to prevent duplicate calls
+        let confirmYesButton = document.getElementById("confirmYes");
+        confirmYesButton.replaceWith(confirmYesButton.cloneNode(true)); // Reset button event
+        confirmYesButton = document.getElementById("confirmYes");
+
+        // Add event listener for confirming deletion
+        confirmYesButton.addEventListener("click", async function () {
+            await deleteUser(userId);
+            confirmModal.hide();
+        });
+    }
+
+
+        async function deleteUser(userId) {
+        try {
+            let response = await fetch(`${baseUrl}/api/User/delete-user/${userId}`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            });
+
+            let result = await response.json();
+
+            if (response.ok) {
+                alert(result.message);
+                fetchUsers(); // Refresh user list after deletion
+            } else {
+                alert("Error: " + result.message);
+            }
+        } catch (error) {
+            console.error("Error deleting user:", error);
+            alert("Failed to delete user. Please try again.");
+        }
+    }
+
+
+</script>
+

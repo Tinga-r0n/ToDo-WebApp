@@ -1,0 +1,1233 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - DoneDash</title>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <script src="~/script/event.js"></script>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- jQuery UI (CSS for styling & JS for functionality) -->
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
+
+    <style>
+    </style>
+</head>
+<body>
+
+
+    <header style="position: sticky; top: 0; z-index: 1000;">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3"
+             style="background-color: #D70000;">
+            <div class="container-fluid d-flex justify-content-between align-items-center flex-wrap">
+                <a class="navbar-brand" href="">
+                    <img src="https://i.ibb.co/0V9PYfBv/jira-logo-scaled-1.png"
+                         alt="jira-logo-scaled-1"
+                         style="height: 28px; border: 0;">
+                </a>
+
+                <div class="d-flex align-items-center gap-3 flex-wrap">
+
+                    <div class="dropdown">
+                        <i id="notificationBell" class="bi bi-bell-fill" style="color:white; cursor:pointer;" data-bs-toggle="dropdown">
+                            <span id="notificationCount" class="badge bg-success" style="position: absolute; top: 5px; right: 5px; display: none;">0</span>
+                        </i>
+                        <ul id="notificationList" class="dropdown-menu dropdown-menu-end" style="max-height: 300px; overflow-y: auto;">
+                            <li class="dropdown-item text-center text-muted">No notifications</li>
+                        </ul>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn border-0 btn-sm dropdown-toggle text-white" type="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-question-circle-fill"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#habitTrackerModal">How to use DONEDASH</a></li>
+                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#goalSettingModal">Why set goals</a></li>
+                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#goalAchievementModal">When to achieve goals</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <div style="
+                        width: 30px;
+                        height: 30px;
+                        border-radius: 50%;
+                        overflow: hidden;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        background-color: forestgreen;
+                         ">
+                            <button class="btn border-0 btn-sm dropdown-toggle custom-dropdown no-arrow" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <span id="user-initial" style="color: white"></span>
+                            </button>
+
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li>
+                                    <a class="dropdown-item" href="@Url.Action("Logout","LogIn")">
+                                        <i style="position:relative;right:10px;" class="fa-solid fa-right-from-bracket"></i>Log out
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+@* 
+     <header>
+        <nav style=" height: 65px; background-color: #D70000" class=" navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                <div class="d-flex justify-content-between align-items-center w-100">
+
+                    <a href="">
+                        <img src="https://i.ibb.co/0V9PYfBv/jira-logo-scaled-1.png"
+                             alt="jira-logo-scaled-1"
+                             style="width: auto; height: 28px; border: 0;">
+                    </a>
+                   </div>
+
+                <div class="gap-3 d-flex justify-content-between align-items-center">
+
+                    <div class="dropdown">
+                        <i id="notificationBell" class="bi bi-bell-fill" style="color:white; cursor:pointer;" data-bs-toggle="dropdown">
+                            <span id="notificationCount" class="badge bg-success" style="position: absolute; top: 5px; right: 5px; display: none;">0</span>
+                        </i>
+                        <ul id="notificationList" class="dropdown-menu dropdown-menu-end" style="max-height: 300px; overflow-y: auto;">
+                            <li class="dropdown-item text-center text-muted">No notifications</li>
+                        </ul>
+                    </div>
+
+                    <div style="color: #fff" class="btn-group ms-0">
+                        <button style="color: #fff" class="btn border-0 btn-sm dropdown-toggle custom-dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-question-circle-fill"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#habitTrackerModal">How to use DONEDASH</a></li>
+                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#goalSettingModal">Why set goals</a></li>
+                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#goalAchievementModal">When to achieve goals</a></li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <div style="
+
+                        width: 30px;
+                        height: 30px;
+                        border-radius: 50%;
+                        overflow: hidden;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        background-color: forestgreen;
+                         ">
+                            <button class="btn border-0 btn-sm dropdown-toggle custom-dropdown no-arrow" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <span id="user-initial" style="color: white"></span>
+                            </button>
+
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li>
+                                    <a class="dropdown-item" href="@Url.Action("Logout","LogIn")">
+                                        <i style="position:relative;right:10px;" class="fa-solid fa-right-from-bracket"></i>Log out
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+ *@
+
+
+    <div>
+        @* <main role="main" class="pb-3"> *@
+        <main role="main">
+            @RenderBody()
+        </main>
+    </div>
+    <style>
+        .no-arrow::after {
+            display: none !important; /* Hides the dropdown arrow */
+        }
+
+    </style>
+    <!-- JavaScript -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const timeSpentInput = document.getElementById("timeSpent");
+            const saveButton = document.getElementById("saveButton");
+
+            timeSpentInput.addEventListener("input", function () {
+                if (timeSpentInput.value.trim() !== "") {
+                    saveButton.removeAttribute("disabled"); 
+                } else {
+                    saveButton.setAttribute("disabled", "true"); 
+                }
+            });
+        });
+
+
+         function getCookie(name) {
+            let match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
+            return match ? decodeURIComponent(match[2]) : null;
+        }
+
+      
+              function getCookie(name) {
+
+            let match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
+            return match ? decodeURIComponent(match[2]) : null;
+        }
+
+        function updateUserInitial() {
+            let userAuth = getCookie("UserAuth");
+
+          
+
+            if (userAuth) {
+                let userDetails = userAuth.split("|");
+
+                if (userDetails.length >= 3) {  
+                    let email = userDetails[2].trim(); 
+             
+
+                    if (email) {
+                        let initial = email.charAt(0).toUpperCase(); 
+                       
+
+                        let userInitialSpan = document.getElementById("user-initial");
+                        if (userInitialSpan) {
+                            userInitialSpan.innerText = initial; 
+                        }
+                    }
+                }
+            }
+        }
+
+
+        document.addEventListener("DOMContentLoaded", updateUserInitial);
+
+
+    </script>
+
+
+    <!--Modal LIST-->
+    <!-- spentModal -->
+    <div class="modal fade" id="timeModal" tabindex="-1" aria-labelledby="timeModalLabel">
+        <div class="modal-dialog">
+            <div class="modal-content" style="border: none; border-radius: 15px; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);">
+                <div class="modal-header">
+                    <h1 style="color: #2E405F; font-weight: 700" class="modal-title fs-5" id="timeModalLabel">Time tracking</h1>
+                </div>
+                <div class="modal-body">
+                    <div class="progress mb-3" style="height: 10px;">
+                        <div class="progress-bar" role="progressbar" style=" width: 100%; background-color: #22A06B;"
+                             aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">
+                        </div>
+                    </div>
+
+                    @*   <p><strong id="originalEstimate">1h logged</strong></p> *@
+                    <div class="text-start">
+                        The original estimate for this todo was   <span id="originalEstimate" style="font-weight: 600; color: #2E405F;"></span>
+                    </div>
+                    <div class="row pt-2">
+                        <div class="col-6 text-start">
+                            <div>
+                                <label style="color: #667389; font-weight: 700; font-size: 14px" for="timeSpent" class="form-label">Time spent</label>
+                                <input class="form-control" type="text" id="timeSpent" name="timeSpent" placeholder="e.g., 2w 4d 6h 45m" />
+                            </div>
+                        </div>
+                        <div class="col-6 text-start">
+                            <div>
+                                <label style="color: #667389; font-weight: 700; font-size: 14px" for="timeRemaining" class="form-label">Time remaining</label>
+                                <input class="form-control" type="text" id="timeRemaining" name="timeRemaining" value="0h" />
+                            </div>
+                        </div>
+                    </div>
+                    <div style="color: #667389" class="pt-3 text-start">
+                        Use the format: 2w 4d 6h 4m
+                        <ul>
+                            <li>w = weeks</li>
+                            <li>d = days</li>
+                            <li>h = hours</li>
+                            <li>m = minutes</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="saveButton" type="button" class="btn btn-primary" data-bs-dismiss="modal" disabled>Save</button>
+                    <button style="font-weight:600; color: #2E405F" type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @* habit tracker modal *@
+    <div class="modal fade" id="habitTrackerModal" tabindex="-1" aria-labelledby="habitTrackerLabel">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="habitTrackerLabel">How to Use DONEDASH</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>DONEDASH works on three principles:</p>
+                    <ol>
+                        <li>To-Do's should be formed for life, until they become like brushing teeth.</li>
+                        <li>Goals should be flexible. You don’t need to try and maintain streaks. Just set a realistic and achievable goal and try to achieve it.</li>
+                        <li>Make notes as your journey progresses. The purpose is to self-reflect on your success/failure as you try to get better.</li>
+                    </ol>
+                    <p><strong>Get started:</strong></p>
+                    <ol>
+                        <li>Set your To-Do by clicking on + Add To-Do.</li>
+                        <li>Set goals for each To-Do.</li>
+                        <li>Click on any empty block in the calendar to mark a habit as done. Click again to toggle.</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @* about todo modal *@
+    <div class="modal fade" id="goalSettingModal" tabindex="-1" aria-labelledby="habitTrackerLabel">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="habitTrackerLabel">Why set goals</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-body">
+                        <p>
+                            <span>Goals are based on the concept of <a href="https://www.preetamnath.com/blog/flexible-consistency" target="_blank">flexible consistency</a>.</span><br>
+                            &emsp;While other habit trackers force you to maintain streaks, which add pressure to your life instead of taking it away, goals are based on the idea that “life keeps happening” and you may miss a day or two. But even if you do miss a day, you should just keep going.
+                        </p>
+                        <p>
+                            To do that, you set a goal, i.e., how many times a month do you want to perform an activity. For example, “exercise 15 times a month.”
+                        </p>
+                        <p>
+                            Now you can perform the activity every alternate day or just on certain days of the week. The purpose is to do it 15 times a month.
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @* about todo modal v2 *@
+    <div class="modal fade" id="goalAchievementModal" tabindex="-1" aria-labelledby="habitTrackerLabel">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="habitTrackerLabel">When to achieve goals</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Goals are personal and depend on different factors. There is no perfect time, but you can set realistic timelines based on your priorities.</p>
+
+                    <p><strong>Short-term vs. Long-term Goals:</strong></p>
+                    <ul>
+                        <li><strong>Short-term goals</strong> (daily, weekly, monthly) keep you motivated.</li>
+                        <li><strong>Long-term goals</strong> (6 months, 1 year, or more) require consistency.</li>
+                    </ul>
+
+                    <p><strong>Flexibility is key.</strong> Life happens, so allow room for adjustments.</p>
+
+                    <p><strong>Break goals into milestones.</strong> Achieve step by step rather than waiting for a "perfect moment."</p>
+
+                    <p><strong>Use a DONEDASH.</strong> Consistently working on small tasks leads to big achievements over time.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @* backlog modal *@
+    <div class="offcanvas offcanvas-start" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-4" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="offcanvasScrollingLabel">Backlog</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body" style="background-color: #F5F7F8;">
+            <div class="">
+                <table style="background-color: none" class="table">
+                    <thead>
+                        <tr></tr>
+                    </thead>
+                    <tbody id="BacklogTasksBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    @* achvement all modal *@
+    <div class="offcanvas offcanvas-end" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-4" id="offcanvasScrollingAchiveAll" aria-labelledby="offcanvasScrollingLabel">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="offcanvasScrollingLabel">Achivement All</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body" style="background-color: #F5F7F8;">
+            <div class="">
+                <table style="background-color: none" class="table">
+                    <thead>
+                        <tr></tr>
+                    </thead>
+                    <tbody id="AllAchievementBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    @* add habits *@
+    <div class="modal fade" id="staticBackdrop" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel">
+        <div class="modal-dialog ">
+            <div class="modal-content" style="border: none;
+                         border-radius: 15px;
+                         box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">
+                        Add Todo
+                    </h1>
+                </div>
+                <div class="modal-body" style="text-align: left">
+                    <form>
+                        <div class="col">
+                            <div class="input-group">
+                                <input type="color" class="pt-3 form-control form-control-color" id="myColor" value="#BB2D3B" title="Choose a color" style=" width: 50px; height: 58px;">
+                                <div class="mb-3 flex-fill">
+                                    <div class="form-floating w-100">
+                                        <input placeholder="Todo name.."
+                                               type="text"
+                                               class="form-control"
+                                               id="recipient-name"
+                                               style="border: 1px solid lightgray; box-shadow: none; transition: border 0.2s; height: 58px;"
+                                               onfocus="this.style.border='2px solid #dc3545';
+                                                       document.getElementById('recipient-label').style.color='#dc3545';
+                                                       document.getElementById('recipient-label').style.fontWeight='normal';
+                                                       this.nextElementSibling.style.opacity='1' ;
+                                                       "
+                                               onblur="this.style.border='1px solid lightgray';
+                                                       document.getElementById('recipient-label').style.color='black';
+                                                       document.getElementById('recipient-label').style.fontWeight='normal';
+                                                       this.nextElementSibling.style.opacity='1'; ">
+                                        <label for="recipient-name" id="recipient-label" class="col-form-label"
+                                               style="transition: color 0.3s;">Todo title</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="form-floating">
+                                <textarea placeholder="Todo summary..."
+                                          class="form-control"
+                                          id="message-desc"
+                                          style="border: 1px solid lightgray; box-shadow: none; transition: border 0.2s;"
+                                          onfocus="this.style.border='2px solid #dc3545';
+                                                     this.nextElementSibling.style.color='#dc3545';
+                                                     this.nextElementSibling.style.fontWeight='normal';
+                                                     this.nextElementSibling.style.opacity='1'
+                                                     "
+                                          onblur="this.style.border='1px solid lightgray';
+                                                    this.nextElementSibling.style.color='black';
+                                                    this.nextElementSibling.style.fontWeight='normal';
+                                                    this.nextElementSibling.style.opacity='1';"></textarea>
+                                <label for="message-desc" class="col-form-label"
+                                       style="transition: color 0.3s, ">Todo summary</label>
+                            </div>
+                        </div>
+
+                        @* <div class="mb-3"> *@
+                        @*     <label for="message-text" class="col-form-label">Todo Description:</label> *@
+                        @*     <textarea placeholder="Todo summary..." *@
+                        @*               class="form-control" *@
+                        @*               id="message-text"></textarea> *@
+                        @* </div> *@
+
+                        <div class="mb-3">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="timeEstimates" placeholder="Todo name.."
+                                       style="border: 1px solid lightgray; box-shadow: none; transition: border 0.2s;"
+                                       onfocus="this.style.border='2px solid #dc3545';
+                                                     this.nextElementSibling.style.color='#dc3545';
+                                                     this.nextElementSibling.style.fontWeight='normal';
+                                                     this.nextElementSibling.style.opacity='1'
+                                                     "
+                                       onblur="this.style.border='1px solid lightgray';
+                                                    this.nextElementSibling.style.color='black';
+                                                    this.nextElementSibling.style.fontWeight='normal';
+                                                    this.nextElementSibling.style.opacity='1';">
+                                <label for="timeEstimates" class="col-form-label"
+                                       style="transition: color 0.3s, ">Original Estimate</label>
+                            </div>
+                        </div>
+
+
+                @*         <div class="mb-2">
+                            <label style="transition: color 0.3s, ">Selected Week</label>
+                            <div class="">
+                                <div class="d-flex align-items-center">
+                                    <span id="prevWeeksy" style="display: inline-flex; justify-content: center; align-items: center; width: 30px; height: 30px; border: 1px solid gray; background-color: #fff; border-radius: 50%;  margin: 5px; cursor: pointer; transition: background-color 0.3s ease;"
+                                          onmouseover="this.style.backgroundColor='gray'"
+                                          onmouseout="this.style.backgroundColor='#white'">
+                                        <i class="bi bi-chevron-left"></i>
+                                    </span>
+
+                                    <span id="nextWeeksy" style="display: inline-flex; justify-content: center; align-items: center; width: 30px; height: 30px; border: 1px solid gray; background-color: #fff; border-radius: 50%;  margin: 5px; cursor: pointer; transition: background-color 0.3s ease;"
+                                          onmouseover="this.style.backgroundColor='gray'"
+                                          onmouseout="this.style.backgroundColor='white'">
+                                        <i class="bi bi-chevron-right"></i>
+                                    </span>
+                                    <p style="font-weight: 600" class="card-text mb-0 ml-3" id="weeklyDateRangesy">Loading date range...</p>
+                                </div>
+                            </div>
+                        </div> *@
+
+                @*         <script>
+
+                             let currentDates = new Date();
+
+                            function getWeeklyDateRanges(date) {
+                                 const startOfWeek = new Date(date.setDate(date.getDate() - date.getDay()));
+                                 const endOfWeek = new Date(date.setDate(date.getDate() - date.getDay() + 6));
+
+                                const options = { weekday: 'short', month: 'short', day: 'numeric' };
+                                const startDatess = startOfWeek.toLocaleDateString('en-US', options);
+                                const endDatess = endOfWeek.toLocaleDateString('en-US', options);
+
+                                return `${startDatess} - ${endDatess}`;
+                            }
+
+                            function updateDateRange() {
+                                document.getElementById('weeklyDateRangesy').textContent = getWeeklyDateRanges(new Date(currentDates));
+                             }
+
+                            document.getElementById('prevWeeksy').addEventListener('click', () => {
+                                 currentDates.setDate(currentDates.getDate() - 7);
+                                 updateDateRange();
+                             });
+
+                             document.getElementById('nextWeeksy').addEventListener('click', () => {
+                                 currentDates.setDate(currentDates.getDate() + 7);
+                                 updateDateRange();
+                             });
+
+                             // Initialize with the current week
+                            updateDateRange();
+                        </script> *@
+                        <div>
+                            <h5>Task Days</h5>
+                            <div class="pt-2">
+                                <div>
+                                    <button class="btn btn-outline-danger" id="mon" onclick="toggleActive(this, event)">
+                                        Mon
+                                    </button>
+                                    <button class="btn btn-outline-danger" id="tue" onclick="toggleActive(this, event)">
+                                        Tue
+                                    </button>
+                                    <button class="btn btn-outline-danger" id="wed" onclick="toggleActive(this, event)">
+                                        Wed
+                                    </button>
+                                    <button class="btn btn-outline-danger" id="thu" onclick="toggleActive(this, event)">
+                                        Thu
+                                    </button>
+                                    <button class="btn btn-outline-danger" id="fri" onclick="toggleActive(this, event)">
+                                        Fri
+                                    </button>
+                                    <button class="btn btn-outline-danger" id="sat" onclick="toggleActive(this, event)">
+                                        Sat
+                                    </button>
+                                    <button class="btn btn-outline-danger" id="sun" onclick="toggleActive(this, event)">
+                                        Sun
+                                    </button>
+                                </div>
+                                <div class="pt-1">
+                                    <button class="btn btn-outline-danger" id="weekdays" onclick="selectWeekdays()">
+                                        Weekdays
+                                    </button>
+                                    <button class="btn btn-outline-danger" id="everyday" onclick="selectEveryday()">
+                                        Everyday
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3 row">
+                            @*   <div class="col">
+                                        <label for="habit-type" class="col-form-label">Repetition:</label>
+                                        <div class="dropdown">
+                                            <button id="repetitionbutton" class="btn btn-outline-secondary dropdown-toggle"
+                                                    type="button" data-bs-toggle="dropdown" aria-expanded="false"
+                                                    style="background-color: transparent; border: 1px solid lightgray;">
+                                                Repetition
+                                            </button>
+
+                                            <ul id="repetitionDropdown" class="dropdown-menu repetition-options"></ul>
+                                        </div>
+                                    </div> *@
+
+                            <div class="col pt-2">
+
+                                <label for="priority-type" class="col-form-label">Priority type</label>
+                                <div class="dropdown">
+                                    <button class="btn btn-outline-secondary dropdown-toggle"
+                                            type="button"
+                                            id="prioritybutton"
+                                            data-bs-toggle="dropdown"
+                                            aria-expanded="false"
+                                            style="background-color: transparent; border: 1px solid lightgray;">
+                                        priority
+                                    </button>
+                                    <ul class="dropdown-menu priority-options">
+                                        <li><a class="dropdown-item" href="#">High</a></li>
+                                        <li><a class="dropdown-item" href="#">Medium</a></li>
+                                        <li><a class="dropdown-item" href="#">Low</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="col pt-3">
+                                <div class="form-check">
+                                    <input class="form-check-input"
+                                           type="checkbox"
+                                           id="habit-type"
+                                           checked />
+                                    <label class="form-check-label" for="habit-type">Mark as Important</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        @*  <div class="mb-3">
+                                    <label for="message-text" class="col-form-label">Start Date:</label>
+                                    <input id="startDate" class="form-control" type="date" />
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="message-text" class="col-form-label">Due Date:</label>
+                                    <input id="dueDate" class="form-control" type="date" />
+                                </div> *@
+
+                        <div class="text-end">
+                            <button type="submit"
+                                    class=" btn btn-danger"
+                                    data-bs-dismiss="modal">
+                                Add Todos
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    @* Unplanned todo modal *@
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Create Achievement</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="achievementForm">
+                        <div class="mb-3">
+                            <label for="todo-title" class="col-form-label">Title:</label>
+                            <input type="text" class="form-control" id="todo-title" placeholder="Todo name..">
+                        </div>
+                        <div class="mb-3">
+                            <label for="todo-summary" class="col-form-label">Summary:</label>
+                            <textarea class="form-control" id="todo-summary" placeholder="Todo summary.."></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="time-spent" class="col-form-label">Time Spent:</label>
+                            <input type="text" class="form-control" id="time-spent" placeholder="0.85h">
+                        </div>
+                        <div style="color: #667389" class="pt-0 text-start">
+                            Use the format: 2w 4d 6h 4m
+                            <ul>
+                                <li>w = weeks</li>
+                                <li>d = days</li>
+                                <li>h = hours</li>
+                                <li>m = minutes</li>
+                            </ul>
+                        </div>
+                        <div class="text-end mt-3">
+                            <button type="submit" id="create" class="btn btn-primary">Create</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+            document.addEventListener("DOMContentLoaded", function () {
+            document.getElementById("create").addEventListener("click", async function (event) {
+                event.preventDefault();
+
+                const title = document.querySelector("#todo-title").value.trim();
+                const description = document.querySelector("#todo-summary").value.trim();
+                const timeSpentInput = document.querySelector("#time-spent").value.trim();
+                var user_Id = getUserId();
+
+                const convertToMinutes = (time) => {
+                    const hoursMatch = time.match(/(\d+)\s*h/);
+                    const minutesMatch = time.match(/(\d+)\s*m/);
+                    let minutes = 0;
+                    if (hoursMatch) {
+                        minutes += parseInt(hoursMatch[1]) * 60;
+                    }
+                    if (minutesMatch) {
+                        minutes += parseInt(minutesMatch[1]);
+                    }
+                    return minutes;
+                };
+
+                const timeSpent = convertToMinutes(timeSpentInput);
+
+                if (!title || !description || !timeSpent) {
+                    alert("All fields are required!");
+                    return;
+                }
+
+                const payload = {
+                    title: title,
+                    user_Id: user_Id,
+                    description: description,
+                    time_spent: timeSpent
+                };
+
+                try {
+                    const response = await fetch("/api/Achievements/AddAchievement", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(payload)
+                    });
+
+                    const result = await response.json();
+
+                    if (response.ok) {
+                        showToast("Task successfully added!", "success");
+                        document.getElementById("achievementForm").reset();
+
+                        var modalElement = document.getElementById("exampleModal");
+                        var modalInstance = bootstrap.Modal.getInstance(modalElement);
+                              if (modalInstance) {
+                        modalInstance.hide();
+
+            
+                        document.body.classList.remove("modal-open");
+                        document.querySelector(".modal-backdrop")?.remove();
+                    }
+                    location.reload();
+
+                    } else {
+                        showToast("Error: " + (result.error || "Unknown error"), "error");
+                    }
+                } catch (error) {
+                    alert("Failed to submit task: " + error.message);
+                }
+            });
+        });
+    </script>
+
+    @* edit modal *@
+    <div class="modal fade" id="staticBackdropEdit" data-bs-keyboard="false" tabindex="-1" aria-labelledby="editTaskLabel">
+        <div class="modal-dialog">
+            <div class="modal-content"
+                 style="border: none;
+                         border-radius: 15px;
+                         box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); ">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="editTaskLabel">Edit Todo</h1>
+                </div>
+                <div class="modal-body" style="text-align: left">
+                    <form id="editTaskForm">
+                        <input type="hidden" id="edit-task-id">
+
+                        <div class="col">
+                            <div class="input-group">
+                                <input type="color" class="pt-3 form-control form-control-color" id="edit-myColor" value="#BB2D3B" title="Choose a color" style=" width: 50px; height: 58px;">
+                                <div class="mb-3 flex-fill">
+                                    <div class="form-floating w-100">
+                                        <input placeholder="Todo name.."
+                                               type="text"
+                                               class="form-control"
+                                               id="edit-title"
+                                               style="border: 1px solid lightgray; box-shadow: none; transition: border 0.2s; height: 58px;"
+                                               onfocus="this.style.border='2px solid #dc3545';
+                                                       document.getElementById('recipient-label').style.color='#dc3545';
+                                                       document.getElementById('recipient-label').style.fontWeight='normal';
+                                                       this.nextElementSibling.style.opacity='1' ;
+                                                       "
+                                               onblur="this.style.border='1px solid lightgray';
+                                                       document.getElementById('recipient-label').style.color='black';
+                                                       document.getElementById('recipient-label').style.fontWeight='normal';
+                                                       this.nextElementSibling.style.opacity='1'; ">
+                                        <label for="edit-title" id="edit-title" class="col-form-label"
+                                               style="transition: color 0.3s;">Todo title</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="form-floating">
+                                <textarea placeholder="Todo summary..."
+                                          class="form-control"
+                                          id="edit-description"
+                                          style="border: 1px solid lightgray; box-shadow: none; transition: border 0.2s;"
+                                          onfocus="this.style.border='2px solid #0d6efd';
+                                                     this.nextElementSibling.style.color='#0d6efd';
+                                                     this.nextElementSibling.style.fontWeight='normal';
+                                                     this.nextElementSibling.style.opacity='1'
+                                                     "
+                                          onblur="this.style.border='1px solid lightgray';
+                                                    this.nextElementSibling.style.color='black';
+                                                    this.nextElementSibling.style.fontWeight='normal';
+                                                    this.nextElementSibling.style.opacity='1';" required></textarea>
+                                <label for="edit-description" class="col-form-label"
+                                       style="transition: color 0.3s, ">Todo Description</label>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="edit-estimates" placeholder="Todo name.."
+                                       style="border: 1px solid lightgray; box-shadow: none; transition: border 0.2s;"
+                                       onfocus="this.style.border='2px solid #dc3545';
+                                                     this.nextElementSibling.style.color='#dc3545';
+                                                     this.nextElementSibling.style.fontWeight='normal';
+                                                     this.nextElementSibling.style.opacity='1'
+                                                     "
+                                       onblur="this.style.border='1px solid lightgray';
+                                                    this.nextElementSibling.style.color='black';
+                                                    this.nextElementSibling.style.fontWeight='normal';
+                                                    this.nextElementSibling.style.opacity='1';">
+                                <label for="edit-estimates" class="col-form-label"
+                                       style="transition: color 0.3s, ">Original Estimate</label>
+                            </div>
+                        </div>
+
+                        @* <div class="mb-3"> *@
+                        @*     <label for="edit-title" class="col-form-label">1. Name this Todo:</label> *@
+                        @*     <input type="text" class="form-control" id="edit-title" required /> *@
+                        @* </div> *@
+
+                        @* <div class="mb-3"> *@
+                        @*     <label for="edit-description" class="col-form-label">2. Todo Description:</label> *@
+                        @*     <textarea class="form-control" id="edit-description" required></textarea> *@
+                        @* </div> *@
+
+                        <div>
+                            <h5>Task Days</h5>
+                            <div class="pt-2">
+                                <div>
+                                    <button class="btn btn-outline-primary" id="mon" onclick="toggleActive(this, event)">
+                                        Mon
+                                    </button>
+                                    <button class="btn btn-outline-primary" id="tue" onclick="toggleActive(this, event)">
+                                        Tue
+                                    </button>
+                                    <button class="btn btn-outline-primary" id="wed" onclick="toggleActive(this, event)">
+                                        Wed
+                                    </button>
+                                    <button class="btn btn-outline-primary" id="thu" onclick="toggleActive(this, event)">
+                                        Thu
+                                    </button>
+                                    <button class="btn btn-outline-primary" id="fri" onclick="toggleActive(this, event)">
+                                        Fri
+                                    </button>
+                                    <button class="btn btn-outline-primary" id="sat" onclick="toggleActive(this, event)">
+                                        Sat
+                                    </button>
+                                    <button class="btn btn-outline-primary" id="sun" onclick="toggleActive(this, event)">
+                                        Sun
+                                    </button>
+                                </div>
+                                <div class="pt-1">
+                                    <button class="btn btn-outline-primary" id="weekdays" onclick="selectWeekdays()">
+                                        Weekdays
+                                    </button>
+                                    <button class="btn btn-outline-primary" id="everyday" onclick="selectEveryday()">
+                                        Everyday
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3 row">
+
+                            <div class="col">
+                                <label for="edit-repetition" class="col-form-label">Repetition</label>
+                                <input type="number" class="form-control" id="edit-repetition" required />
+                            </div>
+
+                            <div class="col">
+                                <label for="edit-priority" class="col-form-label">Priority Level</label>
+                                <select class="form-control" id="edit-priority">
+                                    <option value="1">Low</option>
+                                    <option value="2">Medium</option>
+                                    <option value="3">High</option>
+                                </select>
+                            </div>
+
+                            <div style="padding-top: 5px" class="col form-check ">
+                                <input type="checkbox" class="form-check-input2" id="edit-important">
+                                <label class="form-check-label" for="edit-important">Mark as Important</label>
+                            </div>
+
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="edit-start-date" class="col-form-label">Start Date:</label>
+                            <input type="date" class="form-control" id="edit-start-date" required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="edit-due-date" class="col-form-label">Due Date:</label>
+                            <input type="date" class="form-control" id="edit-due-date" required />
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @* success modals *@
+    <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title" id="successModalLabel">Success</h5>
+                    @*   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button> *@
+                </div>
+                <div class="modal-body">
+                    Todo added successfully!
+                </div>
+                <div class="modal-footer">
+                    @*   <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> *@
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @* task updated success modal *@
+    <div class="modal fade" id="updateSuccessModal" tabindex="-1" aria-labelledby="updateSuccessModalLabel">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title" id="updateSuccessModalLabel">Success</h5>
+                    @*    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button> *@
+                </div>
+                <div class="modal-body">
+                    Task updated successfully!
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @* error modal *@
+    <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="errorModalLabel">Error</h5>
+                    @*   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button> *@
+                </div>
+                <div class="modal-body">
+                    <!-- Error message will be set dynamically -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @* error modal *@
+    <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="errorModalLabel">Error</h5>
+                    @*     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button> *@
+                </div>
+                <div class="modal-body">
+                    <!-- Error message will be inserted dynamically -->
+                </div>
+                <div class="modal-footer">
+                    @*     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> *@
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">Confirm Delete</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete this task?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="confirmDelete">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Note Modal -->
+    <div class="modal fade" id="addNoteModal" tabindex="-1" aria-labelledby="addNoteModalLabel">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addNoteModalLabel">Add Note</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="taskId" />
+                    <div class="mb-3">
+                        <label for="noteText" class="form-label">Note:</label>
+                        <textarea id="noteText" class="form-control" rows="4" placeholder="Enter your note here..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="saveNote()">Save Note</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*view todos /Notes *@
+    <div class="modal fade" id="staticBackdropView" data-bs-keyboard="false" tabindex="-1" aria-labelledby="viewTaskLabel">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content"
+                 style="border: none;
+             border-radius: 15px;
+             box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); ">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="viewTaskLabel">todo</h1>
+                </div>
+                <div class="modal-body" style="text-align: left">
+
+                    <div class="row">
+
+                        <div class="col-md-6">
+                            <form id="viewTaskForm">
+                                <input type="hidden" id="view-task-id">
+                                <div class="col">
+                                    <div class="input-group">
+                                        <input disabled type="color" class="pt-3 form-control form-control-color" id="view-myColor" value="#BB2D3B" title="Choose a color" style=" width: 50px; height: 58px;">
+                                        <div class="mb-3 flex-fill">
+                                            <div class="form-floating w-100">
+                                                <input disabled placeholder="Todo name.."
+                                                       type="text"
+                                                       class="form-control"
+                                                       id="view-title"
+                                                       style="border: 1px solid lightgray; box-shadow: none; transition: border 0.2s; height: 58px;"
+                                                       onfocus="this.style.border='2px solid #dc3545';
+                                                       document.getElementById('recipient-label').style.color='#dc3545';
+                                                       document.getElementById('recipient-label').style.fontWeight='normal';
+                                                       this.nextElementSibling.style.opacity='1' ;
+                                                       "
+                                                       onblur="this.style.border='1px solid lightgray';
+                                                       document.getElementById('recipient-label').style.color='black';
+                                                       document.getElementById('recipient-label').style.fontWeight='normal';
+                                                       this.nextElementSibling.style.opacity='1'; ">
+                                                <label for="recipient-name" id="view-title" class="col-form-label"
+                                                       style="transition: color 0.3s;">Todo title</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="view-description" class="col-form-label">Description</label>
+                                    <textarea class="form-control" id="view-description" readonly></textarea>
+                                </div>
+
+                                <div class="mb-3">
+                                    <div class="form-floating">
+                                        <input disabled type="text" class="form-control" id="view-estimates" placeholder="Todo name.."
+                                               style="border: 1px solid lightgray; box-shadow: none; transition: border 0.2s;"
+                                               onfocus="this.style.border='2px solid #dc3545';
+                                                     this.nextElementSibling.style.color='#dc3545';
+                                                     this.nextElementSibling.style.fontWeight='normal';
+                                                     this.nextElementSibling.style.opacity='1'
+                                                     "
+                                               onblur="this.style.border='1px solid lightgray';
+                                                    this.nextElementSibling.style.color='black';
+                                                    this.nextElementSibling.style.fontWeight='normal';
+                                                    this.nextElementSibling.style.opacity='1';">
+                                        <label for="view-estimates" class="col-form-label"
+                                               style="transition: color 0.3s, ">Original Estimate</label>
+                                    </div>
+                                </div>
+
+
+                                <div>
+                                    <h5>Task Days</h5>
+                                    <div class="pt-2">
+                                        <div>
+                                            <button class="btn btn-outline-primary" id="mon" onclick="toggleActive(this, event)">
+                                                Mon
+                                            </button>
+                                            <button class="btn btn-outline-primary" id="tue" onclick="toggleActive(this, event)">
+                                                Tue
+                                            </button>
+                                            <button class="btn btn-outline-primary" id="wed" onclick="toggleActive(this, event)">
+                                                Wed
+                                            </button>
+                                            <button class="btn btn-outline-primary" id="thu" onclick="toggleActive(this, event)">
+                                                Thu
+                                            </button>
+                                            <button class="btn btn-outline-primary" id="fri" onclick="toggleActive(this, event)">
+                                                Fri
+                                            </button>
+                                            <button class="btn btn-outline-primary" id="sat" onclick="toggleActive(this, event)">
+                                                Sat
+                                            </button>
+                                            <button class="btn btn-outline-primary" id="sun" onclick="toggleActive(this, event)">
+                                                Sun
+                                            </button>
+                                        </div>
+                                        <div class="pt-1">
+                                            <button class="btn btn-outline-primary" id="weekdays" onclick="selectWeekdays()">
+                                                Weekdays
+                                            </button>
+                                            <button class="btn btn-outline-primary" id="everyday" onclick="selectEveryday()">
+                                                Everyday
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mb-3 row">
+
+                                    <div class="col">
+                                        <label for="view-repetition" class="col-form-label">Repetition</label>
+                                        <input type="number" class="form-control" id="view-repetition" readonly />
+                                    </div>
+
+                                    <div class="col">
+                                        <label for="view-priority" class="col-form-label">Priority Level</label>
+                                        <select class="form-control" id="view-priority" disabled>
+                                            <option value="1">Low</option>
+                                            <option value="2">Medium</option>
+                                            <option value="3">High</option>
+                                        </select>
+                                    </div>
+
+                                    <div style="padding-top: 5px" class="col form-check ">
+                                        <label class="form-check-label" for="view-important">Mark as Important</label>
+                                        <input type="checkbox" class="form-check-input" id="view-important" disabled>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="view-start-date" class="col-form-label">Start Date</label>
+                                    <input type="date" class="form-control" id="view-start-date" readonly />
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="view-due-date" class="col-form-label">Due Date</label>
+                                    <input type="date" class="form-control" id="view-due-date" readonly />
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <!-- Clickable text/icon to toggle comment section -->
+                                <label class="col-form-label">
+                                    <a href="#" style="user-select: none; color:white" data-bs-toggle="collapse" data-bs-target="#commentSection" aria-expanded="false" aria-controls="commentSection">
+                                        <svg width="23" height="23" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="#0d6efd">
+                                            <path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                                                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            </path>
+                                        </svg>
+                                    </a>
+                                    Notes
+                                </label>
+
+                                <!-- Collapsible Comment Section -->
+                                <div class="collapse" id="commentSection">
+                                    <div class="form-floating">
+                                        <textarea class="form-control"
+                                                  placeholder="Add notes here..."
+                                                  id="view-comment"></textarea>
+                                        <label class="" for="floatingTextarea" style="font-size: 18px;">Notes</label>
+                                    </div>
+
+
+                                    <button type="button" class="btn btn-primary mt-2" onclick="saveComment()" id="save-comment-button">
+                                        <svg width="23" height="23" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="white">
+                                            <path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                                                  stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                                            </path>
+                                        </svg> Save
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label id="comments-label" class="col-form-label">Notes:</label>
+                                <div id="comments-container" class="comments-list"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="customToast" class="custom-toast">
+        <span id="customToastMessage"></span>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/script/event.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
